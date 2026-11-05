@@ -12,7 +12,7 @@ class MLP:
         # bias da camada oculta
         self.biasOculto = np.random.uniform(-1, 1, self.qtNeuroniosOcultos)
         # pesos da camada de saída
-        self.pesosSaida = np.random.uniform(-1, 1, (self.qtEntradas, self.qtSaidas))
+        self.pesosSaida = np.random.uniform(-1, 1, (self.qtNeuroniosOcultos, self.qtSaidas))
         # Bias da camada de saída
         self.biasSaida = np.random.uniform(-1, 1, self.qtSaidas)
 
@@ -30,12 +30,29 @@ class MLP:
                 entrada.append(0)
 
         entrada = np.array(entrada)
-        
+
         # Calcular a camada oculta
-        somaOculta = np.dot(entrada, self.pesosOcultos) + self.biasOcultos
+        somaOculta = np.dot(entrada, self.pesosOcultos) + self.biasOculto
         saidaOculta = self.sigmoide(somaOculta)
 
         # Calcular a camada de saída
         somaSaida = np.dot(saidaOculta, self.pesosSaida) + self.biasSaida
 
         return somaSaida
+
+# Criar a rede neural
+rede = MLP()
+
+tabuleiro = [
+    "X", "O", "X",
+    "",  "X", "",
+    "O", "",  ""
+]
+
+# Executar a propagação
+resultado = rede.propagar(tabuleiro)
+
+print("Saídas da rede:")
+print(resultado)
+
+print("Quantidade de saídas:", len(resultado))
