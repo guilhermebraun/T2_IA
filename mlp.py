@@ -40,19 +40,47 @@ class MLP:
 
         return somaSaida
 
-# Criar a rede neural
-rede = MLP()
+    def indicarJogada(self, tabuleiro):
+        saidas = self.propagar(tabuleiro)
+        melhorMovimento = np.argmax(saidas)
+        return melhorMovimento
 
-tabuleiro = [
-    "X", "O", "X",
-    "",  "X", "",
-    "O", "",  ""
-]
+    def obterPesos(self):
+        pesos = np.concatenate((self.pesosOcultos.flatten(), self.pesosSaida.flatten()))
+        return pesos
 
-# Executar a propagação
-resultado = rede.propagar(tabuleiro)
+    def definirPesos(self, cromossomo):
+        tamPesosOcultos = self.qtEntradas * self.qtNeuroniosOcultos
+        pesosOcultos = cromossomo[:tamPesosOcultos]
+        pesosSaida = cromossomo[tamPesosOcultos:]
+        self.pesosOcultos = pesosOcultos.reshape((self.qtEntradas, self.qtNeuroniosOcultos))
+        self.pesosSaida = pesosSaida.reshape((self.qtNeuroniosOcultos, self.qtSaidas))
 
-print("Saídas da rede:")
-print(resultado)
+if __name__ == "__main__":
+    # Criar a rede neural
+    rede = MLP()
 
-print("Quantidade de saídas:", len(resultado))
+    cromossomo = rede.obterPesos()
+    print("Quantidade de genes:", len(cromossomo))
+    rede.definirPesos(cromossomo)
+
+
+    novoCromossomo = rede.obterPesos()
+    print("Pesos foram mantidos:", np.array_equal(cromossomo, novoCromossomo))
+
+    tabuleiro = [
+        "X", "O", "X",
+        "",  "X", "",
+        "O", "",  ""
+    ]
+
+    # Executar a propagação
+    resultado = rede.propagar(tabuleiro)
+    jogada = rede.indicarJogada(tabuleiro)
+
+
+    print("Saídas da rede:")
+    print(resultado)
+
+    print("Quantidade de saídas:", len(resultado))
+    print("Jogada indicada pela rede:", jogada)
