@@ -45,16 +45,51 @@ class MLP:
         melhorMovimento = np.argmax(saidas)
         return melhorMovimento
 
-    def obterPesos(self):
-        pesos = np.concatenate((self.pesosOcultos.flatten(), self.pesosSaida.flatten()))
-        return pesos
+    def obterParametros(self):
+        parametros = np.concatenate((self.pesosOcultos.flatten(), self.biasOculto.flatten(), self.pesosSaida.flatten(), self.biasSaida.flatten()))
+        return parametros
 
-    def definirPesos(self, cromossomo):
+    def obterParametros(self):
+        parametros = np.concatenate((
+            self.pesosOcultos.flatten(),
+            self.biasOculto.flatten(),
+            self.pesosSaida.flatten(),
+            self.biasSaida.flatten()
+        ))
+
+        return parametros
+
+    def definirParametros(self, cromossomo):
+        # Separar os parametros do cromossomo
         tamPesosOcultos = self.qtEntradas * self.qtNeuroniosOcultos
-        pesosOcultos = cromossomo[:tamPesosOcultos]
-        pesosSaida = cromossomo[tamPesosOcultos:]
-        self.pesosOcultos = pesosOcultos.reshape((self.qtEntradas, self.qtNeuroniosOcultos))
-        self.pesosSaida = pesosSaida.reshape((self.qtNeuroniosOcultos, self.qtSaidas))
+        tamBiasOculto = self.qtNeuroniosOcultos
+        tamPesosSaida = self.qtNeuroniosOcultos * self.qtSaidas
+
+        inicio = 0
+
+        pesosOcultos = cromossomo[inicio:inicio + tamPesosOcultos]
+        inicio += tamPesosOcultos
+        biasOculto = cromossomo[inicio:inicio + tamBiasOculto]
+        inicio += tamBiasOculto
+        pesosSaida = cromossomo[inicio:inicio + tamPesosSaida]
+        inicio += tamPesosSaida
+        biasSaida = cromossomo[inicio:]
+
+        # Reconstruir as matrizes e vetores
+        self.pesosOcultos = pesosOcultos.reshape(
+            self.qtEntradas,
+            self.qtNeuroniosOcultos
+        )
+
+        self.biasOculto = biasOculto
+
+        self.pesosSaida = pesosSaida.reshape(
+            self.qtNeuroniosOcultos,
+            self.qtSaidas
+        )
+
+        self.biasSaida = biasSaida
+
 
 if __name__ == "__main__":
     # Criar a rede neural
