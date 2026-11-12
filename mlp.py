@@ -42,6 +42,12 @@ class MLP:
 
     def indicarJogada(self, tabuleiro):
         saidas = self.propagar(tabuleiro)
+
+        # Considera somente as posicoes vazias
+        for i in range(len(tabuleiro)):
+            if tabuleiro[i] != "":
+                saidas[i] = float("-inf")
+
         melhorMovimento = np.argmax(saidas)
         return melhorMovimento
 
