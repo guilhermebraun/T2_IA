@@ -4,9 +4,9 @@ from mlp import MLP
 tamPopulacao = 100
 
 redeReferencia = MLP()
-qtGenes = len(redeReferencia.obterPesos())
+qtGenes = len(redeReferencia.obterParametros())
 
-# Gera um individuo com 180 pesos aleatorios
+# Gera um individuo com 199 parametros aleatorios
 def gerarIndividuo():
     individuo = np.random.uniform(-1, 1, qtGenes)
 
@@ -31,7 +31,6 @@ if __name__ == "__main__":
 
     print("\nPrimeiro individuo (5 primeiros genes):")
     print(populacao[0][:5])
-
-    print("\nTodos os individuos possuem 180 genes:",
-          all(len(individuo) == qtGenes for individuo in populacao))
     
+    print("\nTodos os individuos possuem 199 genes:",
+      all(len(individuo) == qtGenes for individuo in populacao))
