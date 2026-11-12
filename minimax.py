@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 def verificarVencedor(tabuleiro):
 
     combinacoes = [ #Vitórias
@@ -19,55 +21,70 @@ def verificarVencedor(tabuleiro):
 
 def jogadasDisponiveis(tabuleiro):
     jogadas = []
+
     for i in range(len(tabuleiro)):
         if tabuleiro[i] == "":
             jogadas.append(i)
-    
+
     return jogadas
 
-#Maximizando indica de quem é a vez de jogar - True = X, False = O
+
+# Maximizando indica de quem é a vez de jogar
+# True = X, False = O
+@lru_cache(maxsize=None)
 def minimax(tabuleiro, maximizando):
+
+    tabuleiro = list(tabuleiro)
     resultado = verificarVencedor(tabuleiro)
+
     if resultado == "X":
         return 1
+
     if resultado == "O":
         return -1
+
     if resultado == "Empate":
         return 0
-    
+
     if maximizando: # Vez do X jogar
         melhorPontuacao = float("-inf")
+
         for jogada in jogadasDisponiveis(tabuleiro):
             tabuleiro[jogada] = "X"
-            pontuacao = minimax(tabuleiro, False)
+            pontuacao = minimax(tuple(tabuleiro), False)
             tabuleiro[jogada] = ""
+
             melhorPontuacao = max(melhorPontuacao, pontuacao)
 
         return melhorPontuacao
 
     else: # Vez do O jogar
         melhorPontuacao = float("inf")
+
         for jogada in jogadasDisponiveis(tabuleiro):
             tabuleiro[jogada] = "O"
-            pontuacao = minimax(tabuleiro, True)
+            pontuacao = minimax(tuple(tabuleiro), True)
             tabuleiro[jogada] = ""
+
             melhorPontuacao = min(melhorPontuacao, pontuacao)
 
         return melhorPontuacao
 
 
 def melhorJogada(tabuleiro, jogador):
+
     if jogador == "X":
         melhorPontuacao = float("-inf")
         maximizando = False
     else:
         melhorPontuacao = float("inf")
         maximizando = True
+
     melhorMovimento = None
 
     for jogada in jogadasDisponiveis(tabuleiro):
         tabuleiro[jogada] = jogador
-        pontuacao = minimax(tabuleiro, maximizando)
+        pontuacao = minimax(tuple(tabuleiro), maximizando)
         tabuleiro[jogada] = ""
 
         if jogador == "X":
@@ -83,35 +100,36 @@ def melhorJogada(tabuleiro, jogador):
     return melhorMovimento
 
 
-tabuleiro = [
-    "X", "X", "",
-    "O", "O", "",
-    "", "", ""
+if __name__ == "__main__":
+
+    tabuleiro = [
+        "X", "X", "",
+        "O", "O", "",
+        "", "", ""
     ]
 
-resultado = verificarVencedor(tabuleiro)
-jogadas = jogadasDisponiveis(tabuleiro)
-pontuacao = minimax(tabuleiro, True)
+    resultado = verificarVencedor(tabuleiro)
+    jogadas = jogadasDisponiveis(tabuleiro)
+    pontuacao = minimax(tuple(tabuleiro), True)
 
-print("Melhor pontuacao:", pontuacao)
-print("Jogadas disponíveis: ", jogadas)
-print("Resultado:", resultado)
+    print("Melhor pontuacao:", pontuacao)
+    print("Jogadas disponíveis:", jogadas)
+    print("Resultado:", resultado)
 
-tabuleiroX = [
-    "X", "X", "",
-    "O", "O", "",
-    "", "", ""
-]
+    tabuleiroX = [
+        "X", "X", "",
+        "O", "O", "",
+        "", "", ""
+    ]
 
-jogadaX = melhorJogada(tabuleiroX, "X")
-print("Melhor jogada do X:", jogadaX)
+    jogadaX = melhorJogada(tabuleiroX, "X")
+    print("Melhor jogada do X:", jogadaX)
 
+    tabuleiroO = [
+        "X", "X", "",
+        "O", "", "",
+        "", "", ""
+    ]
 
-tabuleiroO = [
-    "X", "X", "",
-    "O", "", "",
-    "", "", ""
-]
-
-jogadaO = melhorJogada(tabuleiroO, "O")
-print("Melhor jogada do O:", jogadaO)
+    jogadaO = melhorJogada(tabuleiroO, "O")
+    print("Melhor jogada do O:", jogadaO)
