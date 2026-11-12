@@ -45,9 +45,6 @@ class MLP:
         melhorMovimento = np.argmax(saidas)
         return melhorMovimento
 
-    def obterParametros(self):
-        parametros = np.concatenate((self.pesosOcultos.flatten(), self.biasOculto.flatten(), self.pesosSaida.flatten(), self.biasSaida.flatten()))
-        return parametros
 
     def obterParametros(self):
         parametros = np.concatenate((
@@ -95,13 +92,13 @@ if __name__ == "__main__":
     # Criar a rede neural
     rede = MLP()
 
-    cromossomo = rede.obterPesos()
+    cromossomo = rede.obterParametros()
     print("Quantidade de genes:", len(cromossomo))
-    rede.definirPesos(cromossomo)
 
+    rede.definirParametros(cromossomo)
 
-    novoCromossomo = rede.obterPesos()
-    print("Pesos foram mantidos:", np.array_equal(cromossomo, novoCromossomo))
+    novoCromossomo = rede.obterParametros()
+    print("Parametros foram mantidos:", np.array_equal(cromossomo, novoCromossomo))
 
     tabuleiro = [
         "X", "O", "X",
@@ -112,7 +109,6 @@ if __name__ == "__main__":
     # Executar a propagação
     resultado = rede.propagar(tabuleiro)
     jogada = rede.indicarJogada(tabuleiro)
-
 
     print("Saídas da rede:")
     print(resultado)
